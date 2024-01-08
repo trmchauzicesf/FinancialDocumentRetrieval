@@ -19,7 +19,7 @@ namespace FinancialDocumentRetrieval.DAL
             services.AddDatabase(configuration);
 
             services.AddIdentity();
-
+            services.AddScoped<IRepositoryInitUnitOfWork, RepositoryInitUnitOfWork>();
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
             services.AddRepositories();
@@ -30,6 +30,7 @@ namespace FinancialDocumentRetrieval.DAL
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseConfig = configuration.GetSection("Database").Get<DatabaseConfiguration>();
+            if (databaseConfig == null) { return; }
 
             services.AddDbContext<DatabaseContext>(options =>
                     options.UseSqlServer(databaseConfig.ConnectionString,
@@ -39,6 +40,10 @@ namespace FinancialDocumentRetrieval.DAL
         private static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ITenantRepository, TenantRepository>();
+            services.AddScoped<IFinancialDocumentRepository, FinancialDocumentRepository>();
+            services.AddScoped<ITenantClientRepository, TenantClientRepository>();
         }
 
         private static void AddIdentity(this IServiceCollection services)

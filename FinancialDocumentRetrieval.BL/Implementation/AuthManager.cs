@@ -20,7 +20,6 @@ namespace FinancialDocumentRetrieval.BL.Implementation
         private readonly ILogger<AuthManager> _logger;
         private ApiUser _user;
 
-
         public AuthManager(IMapper mapper, UserManager<ApiUser> userManager, IConfiguration configuration,
             ILogger<AuthManager> logger)
         {
@@ -32,15 +31,14 @@ namespace FinancialDocumentRetrieval.BL.Implementation
 
         public async Task<AuthResponseDto> Login(LoginDto loginDto)
         {
-            AuthResponseDto authResponseDto = new AuthResponseDto();
+            var authResponseDto = new AuthResponseDto();
             _logger.LogInformation($"Looking for user with email {loginDto.Email}");
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
-            bool isValidUser = await _userManager.CheckPasswordAsync(_user, loginDto.Password);
+            var isValidUser = await _userManager.CheckPasswordAsync(_user, loginDto.Password);
 
             if (_user == null || isValidUser == false)
             {
                 _logger.LogWarning($"User with email {loginDto.Email} was not found");
-                // not to return null
                 return authResponseDto;
             }
 
@@ -49,6 +47,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation
 
             authResponseDto.Token = token;
             authResponseDto.UserId = _user.Id;
+
             return authResponseDto;
         }
 
@@ -67,32 +66,37 @@ namespace FinancialDocumentRetrieval.BL.Implementation
             return result.Errors;
         }
 
+        #region Private
+
         private async Task<string> GenerateToken()
         {
-            var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfiguration:SecretKey"]));
+            var securityKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfiguration:SecretKey"]));
 
-            var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var roles = await _userManager.GetRolesAsync(_user);
-            var roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x)).ToList();
+            var roleClaims = roles.Select(r => new Claim(ClaimTypes.Role, r)).ToList();
             var userClaims = await _userManager.GetClaimsAsync(_user);
 
             var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, _user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, _user.Email),
-                new Claim("uid", _user.Id),
-            }
-            .Union(userClaims).Union(roleClaims);
+                {
+                    new(JwtRegisteredClaimNames.Sub, _user.Email),
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new(JwtRegisteredClaimNames.Email, _user.Email),
+                    new("uid", _user.Id),
+                }
+                .Union(userClaims).Union(roleClaims);
 
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["JwtConfiguration:DurationInMinutes"])),
                 signingCredentials: credentials
-                );
+            );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        #endregion
     }
 }

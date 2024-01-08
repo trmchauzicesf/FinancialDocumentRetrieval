@@ -1,5 +1,4 @@
 ﻿using FinancialDocumentRetrieval.DAL.Repositories.Interface;
-using FinancialDocumentRetrieval.Models.Entity;
 
 namespace FinancialDocumentRetrieval.DAL.UnitOfWork
 {
@@ -7,6 +6,5 @@ namespace FinancialDocumentRetrieval.DAL.UnitOfWork
     {
         void Commit();
         void Rollback();
-        IBaseRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity;
     }
 }

@@ -1,0 +1,22 @@
+﻿using FinancialDocumentRetrieval.BL.Interface.Strategy;
+using FinancialDocumentRetrieval.DAL.UnitOfWork;
+using FinancialDocumentRetrieval.Models.Common;
+using FinancialDocumentRetrieval.Models.Common.Exceptions;
+using FinancialDocumentRetrieval.Models.Entity;
+using System.Linq.Expressions;
+
+namespace FinancialDocumentRetrieval.BL.Implementation.Strategy
+{
+    public class ProductStrategy : IValidationStrategy
+    {
+        public async Task Validate(FinancialDocumentValidation financialDocumentValidation, IRepositoryInitUnitOfWork unitOfWork)
+        {
+            Expression<Func<Product, bool>> predicate = p => p.Code == financialDocumentValidation.ProductCode && p.IsActive;
+            var isProductCodeActive = await unitOfWork.ProductRepository.CheckIfExistsAsync(predicate);
+            if (!isProductCodeActive)
+            {
+                throw new FinancialDocumentRetrievalException("Product code is not supported");
+            }
+        }
+    }
+}

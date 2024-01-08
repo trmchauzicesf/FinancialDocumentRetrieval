@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinancialDocumentRetrieval.DAL.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class FinancialDocumentRetrievalContextModelSnapshot : ModelSnapshot
+    partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -92,34 +92,184 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("ApiUser", (string)null);
                 });
 
             modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.Client", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("CompanyType")
                         .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("RegistrationNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Vat")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.ToTable("Client");
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.FinancialDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Data")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RegistrationNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Vat")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("FinancialDocument");
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.Tenant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.ToTable("Tenant");
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.TenantClient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("TenantClient");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -146,20 +296,20 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("IdentityRole", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = "a5e4418e-f1ff-4a16-ab91-d75a87c4ab52",
-                            ConcurrencyStamp = "aa65d1bc-a7f2-4528-8f94-b123ee932c59",
+                            Id = "57b9e046-d67e-4c65-a360-33ef1c952b5c",
+                            ConcurrencyStamp = "3d890113-0b1a-4acf-8203-d7cf34861fad",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "985ee0e6-cf07-4628-b6e5-b136aaba6364",
-                            ConcurrencyStamp = "b4c3bc0c-aeda-4ace-8b5d-1aa83d348d96",
+                            Id = "95247276-87f3-407f-8cf4-4c50c2e35472",
+                            ConcurrencyStamp = "e7e7ad62-0454-4c30-83be-a6e118117479",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -187,7 +337,7 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("IdentityRoleClaim<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -212,7 +362,7 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("IdentityUserClaim<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -234,7 +384,7 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("IdentityUserLogin<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -249,7 +399,7 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("IdentityUserRole<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -268,7 +418,53 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("IdentityUserToken<string>", (string)null);
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.FinancialDocument", b =>
+                {
+                    b.HasOne("FinancialDocumentRetrieval.Models.Entity.Client", "Client")
+                        .WithMany("FinancialDocuments")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FinancialDocumentRetrieval.Models.Entity.Product", "Product")
+                        .WithMany("FinancialDocuments")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FinancialDocumentRetrieval.Models.Entity.Tenant", "Tenant")
+                        .WithMany("FinancialDocuments")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.TenantClient", b =>
+                {
+                    b.HasOne("FinancialDocumentRetrieval.Models.Entity.Client", "Client")
+                        .WithMany("TenantClients")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FinancialDocumentRetrieval.Models.Entity.Tenant", "Tenant")
+                        .WithMany("TenantClients")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -320,6 +516,25 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.Client", b =>
+                {
+                    b.Navigation("FinancialDocuments");
+
+                    b.Navigation("TenantClients");
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.Product", b =>
+                {
+                    b.Navigation("FinancialDocuments");
+                });
+
+            modelBuilder.Entity("FinancialDocumentRetrieval.Models.Entity.Tenant", b =>
+                {
+                    b.Navigation("FinancialDocuments");
+
+                    b.Navigation("TenantClients");
                 });
 #pragma warning restore 612, 618
         }

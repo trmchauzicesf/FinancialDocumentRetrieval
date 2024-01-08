@@ -3,18 +3,39 @@ using FinancialDocumentRetrieval.DAL.Repositories.Interface;
 using FinancialDocumentRetrieval.Models.Common.Exceptions;
 using FinancialDocumentRetrieval.Models.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
+    public class BaseRepository
     {
-        protected readonly DatabaseContext Context;
-        protected readonly DbSet<TEntity> DbSet;
+        protected DatabaseContext Context { get; private set; }
+
+        public BaseRepository()
+        {
+        }
 
         public BaseRepository(DatabaseContext context)
         {
             Context = context;
-            DbSet = context.Set<TEntity>();
+        }
+
+        public virtual void SetDbContext(DatabaseContext context)
+        {
+            this.Context = context;
+        }
+    }
+
+    public class BaseRepository<TEntity> : BaseRepository, IBaseRepository<TEntity> where TEntity : BaseEntity
+    {
+        protected DbSet<TEntity> DbSet => Context.Set<TEntity>();
+
+        public BaseRepository() : base()
+        {
+        }
+
+        public BaseRepository(DatabaseContext context) : base(context)
+        {
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)
@@ -28,13 +49,12 @@ namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
         public async Task<TEntity> DeleteAsync(TEntity entity)
         {
             var removedEntity = DbSet.Remove(entity).Entity;
-
             await Context.SaveChangesAsync();
 
             return removedEntity;
         }
 
-        public async Task<TEntity> GetAsync(int? id)
+        public async Task<TEntity> GetAsync(Guid? id)
         {
             var result = await DbSet.FindAsync(id);
             if (result is null)
@@ -50,6 +70,10 @@ namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
             return await DbSet.ToListAsync();
         }
 
+        public async Task<bool> CheckIfExistsAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await DbSet.AnyAsync(predicate);
+        }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
         {

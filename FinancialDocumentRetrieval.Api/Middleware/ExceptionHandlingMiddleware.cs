@@ -11,6 +11,7 @@ namespace FinancialDocumentRetrieval.Api.Middleware
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
+        private const string ResponseContentType = "application/json";
 
         public ExceptionMiddleware(
             RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env
@@ -21,7 +22,6 @@ namespace FinancialDocumentRetrieval.Api.Middleware
             _env = env;
         }
 
-        //ova metoda mora da se zove bas ovako da bi frameworke znao da je pozove u middleware
         public async Task InvokeAsync(HttpContext context)
         {
             try
@@ -37,7 +37,7 @@ namespace FinancialDocumentRetrieval.Api.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            context.Response.ContentType = "application/json";
+            context.Response.ContentType = ResponseContentType;
 
             switch (ex)
             {
@@ -60,7 +60,7 @@ namespace FinancialDocumentRetrieval.Api.Middleware
                 Data = new ApiException
                 {
                     Message = ex.Message,
-                    Details = _env.IsDevelopment() ? ex.StackTrace?.ToString() : "Internal server error"
+                    Details = _env.IsDevelopment() ? ex.StackTrace : "Internal server error"
                 },
                 Successful = false,
             };

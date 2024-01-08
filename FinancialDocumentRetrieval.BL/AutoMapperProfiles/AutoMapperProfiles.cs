@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
 using FinancialDocumentRetrieval.DAL.Identity;
+using FinancialDocumentRetrieval.Models.Common;
+using FinancialDocumentRetrieval.Models.DTOs.RequestDTOs;
+using FinancialDocumentRetrieval.Models.DTOs.ResponseDTOs;
+using FinancialDocumentRetrieval.Models.Entity;
 using FinancialDocumentRetrieval.Models.Users;
 
 namespace FinancialDocumentRetrieval.BL.AutoMapperProfiles
@@ -11,6 +15,8 @@ namespace FinancialDocumentRetrieval.BL.AutoMapperProfiles
             public AutoMapperProfile()
             {
                 CreateMap<ApiUserDto, ApiUser>().ReverseMap();
+                CreateMap<FinancialDocumentRequestDTO, FinancialDocumentValidation>().ReverseMap();
+                CreateMap<Client, CompanyDTO>().ReverseMap();
             }
         }
     }

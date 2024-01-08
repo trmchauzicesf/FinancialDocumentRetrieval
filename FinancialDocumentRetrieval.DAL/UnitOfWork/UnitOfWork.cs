@@ -1,19 +1,17 @@
 ﻿using FinancialDocumentRetrieval.DAL.Contexts;
 using FinancialDocumentRetrieval.DAL.Repositories.Implementation;
-using FinancialDocumentRetrieval.DAL.Repositories.Interface;
-using FinancialDocumentRetrieval.Models.Entity;
 
 namespace FinancialDocumentRetrieval.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DatabaseContext _context;
-        private Dictionary<Type, object> _repositories;
+        private readonly object _repositoryInitLockObj = new();
+        private Dictionary<Type, BaseRepository> _repositoryInstances = new();
 
         public UnitOfWork(DatabaseContext context)
         {
             _context = context;
-            _repositories = new Dictionary<Type, object>();
         }
 
         public void Commit()
@@ -26,21 +24,31 @@ namespace FinancialDocumentRetrieval.DAL.UnitOfWork
             _context.ChangeTracker.Entries().ToList().ForEach(x => x.Reload());
         }
 
-        public IBaseRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity
-        {
-            if (_repositories.ContainsKey(typeof(TEntity)))
-            {
-                return (IBaseRepository<TEntity>)_repositories[typeof(TEntity)];
-            }
-
-            var repository = new BaseRepository<TEntity>(_context);
-            _repositories.Add(typeof(TEntity), repository);
-            return repository;
-        }
-
         public void Dispose()
         {
             _context.Dispose();
+        }
+
+        protected TRepository GetOrInitRepository<TRepository>() where TRepository : BaseRepository, new()
+        {
+            return GetOrInitRepository(() => new TRepository());
+        }
+
+        protected TRepository GetOrInitRepository<TRepository>(Func<TRepository> repositoryCreator) where TRepository : BaseRepository
+        {
+
+            lock (_repositoryInitLockObj)
+            {
+                if (!_repositoryInstances.ContainsKey(typeof(TRepository)))
+                {
+                    var repository = repositoryCreator();
+                    repository.SetDbContext(_context);
+
+                    _repositoryInstances[typeof(TRepository)] = repository;
+                }
+
+                return (TRepository)_repositoryInstances[typeof(TRepository)];
+            }
         }
     }
 }
