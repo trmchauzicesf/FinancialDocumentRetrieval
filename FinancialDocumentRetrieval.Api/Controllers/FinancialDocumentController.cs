@@ -1,6 +1,7 @@
 using FinancialDocumentRetrieval.BL.Interface;
 using FinancialDocumentRetrieval.Models.DTOs.RequestDTOs;
 using FinancialDocumentRetrieval.Models.DTOs.ResponseDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialDocumentRetrieval.Api.Controllers
@@ -14,7 +15,7 @@ namespace FinancialDocumentRetrieval.Api.Controllers
             _financialDocumentService = financialDocumentService;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("get-financial-document")]
         public async Task<ActionResult<FinancialDocumentResponseDto>> Get(
             [FromBody] FinancialDocumentRequestDTO financialDocumentRequestDto)

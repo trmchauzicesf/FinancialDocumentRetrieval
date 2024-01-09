@@ -1,6 +1,6 @@
 ﻿using FinancialDocumentRetrieval.Models.DTOs.RequestDTOs;
 
-namespace FinancialDocumentRetrieval.Models.Common
+namespace FinancialDocumentRetrieval.Models.Common.Validation
 {
     public class FinancialDocumentValidation : FinancialDocumentRequestDTO
     {

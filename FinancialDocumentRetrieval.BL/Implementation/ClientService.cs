@@ -10,9 +10,9 @@ namespace FinancialDocumentRetrieval.BL.Implementation
     public class ClientService : IClientService
     {
         private readonly IRepositoryInitUnitOfWork _unitOfWork;
-        private readonly ILogger<Client> _logger;
+        private readonly ILogger<ClientService> _logger;
 
-        public ClientService(IRepositoryInitUnitOfWork unitOfWork, ILogger<Client> logger)
+        public ClientService(IRepositoryInitUnitOfWork unitOfWork, ILogger<ClientService> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -25,10 +25,10 @@ namespace FinancialDocumentRetrieval.BL.Implementation
 
         public async Task<Client> GetAdditionalClientInfoForVat(string clientVat)
         {
-            Client additionalClientInfo = await _unitOfWork.ClientRepository.GetAdditionalClientInfoForVat(clientVat);
+            var additionalClientInfo = await _unitOfWork.ClientRepository.GetAdditionalClientInfoForVat(clientVat);
             if (additionalClientInfo != null && additionalClientInfo.CompanyType == nameof(AppEnums.CompanyType.small))
             {
-                throw new FinancialDocumentRetrievalException($"CompanyType is {nameof(AppEnums.CompanyType.small)}");
+                throw new FinancialDocumentRetrievalException($"Company Type is {nameof(AppEnums.CompanyType.small)}");
             }
 
             return additionalClientInfo;

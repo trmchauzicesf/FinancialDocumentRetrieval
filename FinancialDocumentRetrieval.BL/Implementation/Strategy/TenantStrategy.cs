@@ -1,7 +1,7 @@
 ﻿using FinancialDocumentRetrieval.BL.Interface.Strategy;
 using FinancialDocumentRetrieval.DAL.UnitOfWork;
-using FinancialDocumentRetrieval.Models.Common;
 using FinancialDocumentRetrieval.Models.Common.Exceptions;
+using FinancialDocumentRetrieval.Models.Common.Validation;
 using FinancialDocumentRetrieval.Models.Entity;
 using System.Linq.Expressions;
 

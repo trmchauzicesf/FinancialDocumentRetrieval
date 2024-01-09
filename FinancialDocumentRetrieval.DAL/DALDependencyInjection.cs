@@ -17,24 +17,30 @@ namespace FinancialDocumentRetrieval.DAL
         public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDatabase(configuration);
-
             services.AddIdentity();
-            services.AddScoped<IRepositoryInitUnitOfWork, RepositoryInitUnitOfWork>();
-            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
-
+            services.AddUnitOfWork();
             services.AddRepositories();
 
             return services;
         }
 
+        private static void AddUnitOfWork(this IServiceCollection services)
+        {
+            services.AddScoped<IRepositoryInitUnitOfWork, RepositoryInitUnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+        }
+
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseConfig = configuration.GetSection("Database").Get<DatabaseConfiguration>();
-            if (databaseConfig == null) { return; }
+            if (databaseConfig == null)
+            {
+                return;
+            }
 
             services.AddDbContext<DatabaseContext>(options =>
-                    options.UseSqlServer(databaseConfig.ConnectionString,
-                        opt => opt.MigrationsAssembly(typeof(DatabaseContext).Assembly.FullName)));
+                options.UseSqlServer(databaseConfig.ConnectionString,
+                    opt => opt.MigrationsAssembly(typeof(DatabaseContext).Assembly.FullName)));
         }
 
         private static void AddRepositories(this IServiceCollection services)
@@ -72,4 +78,3 @@ namespace FinancialDocumentRetrieval.DAL
         }
     }
 }
-

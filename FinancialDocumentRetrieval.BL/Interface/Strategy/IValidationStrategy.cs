@@ -1,5 +1,5 @@
 ﻿using FinancialDocumentRetrieval.DAL.UnitOfWork;
-using FinancialDocumentRetrieval.Models.Common;
+using FinancialDocumentRetrieval.Models.Common.Validation;
 
 namespace FinancialDocumentRetrieval.BL.Interface.Strategy
 {

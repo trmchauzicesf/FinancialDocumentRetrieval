@@ -1,4 +1,5 @@
 ﻿using FinancialDocumentRetrieval.DAL.Repositories.Interface;
+using FinancialDocumentRetrieval.Models.Common.Exceptions;
 using FinancialDocumentRetrieval.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +17,17 @@ namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
 
         public async Task<string> GetDataForTenantIdAndDocumentId(Guid tenantId, Guid documentId)
         {
-            return await Context.FinancialDocuments
+            var data = await Context.FinancialDocuments
                 .Where(fd => fd.TenantId == tenantId && fd.Id == documentId)
                 .Select(fd => fd.Data)
                 .FirstOrDefaultAsync();
+
+            if (data == null)
+            {
+                throw new NotFoundException(nameof(GetDataForTenantIdAndDocumentId), tenantId);
+            }
+
+            return data;
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FinancialDocumentRetrieval.DAL.Migrations
 {
-    public partial class AllDomainTables : Migration
+    public partial class AllDomainTablesAdded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -276,12 +276,12 @@ namespace FinancialDocumentRetrieval.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "IdentityRole",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "57b9e046-d67e-4c65-a360-33ef1c952b5c", "3d890113-0b1a-4acf-8203-d7cf34861fad", "Administrator", "ADMINISTRATOR" });
+                values: new object[] { "25a22b1d-7f5b-4e0c-8f65-2f6fd58ccfa8", "78519b99-5531-4fae-9414-be7f60a73896", "Administrator", "ADMINISTRATOR" });
 
             migrationBuilder.InsertData(
                 table: "IdentityRole",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "95247276-87f3-407f-8cf4-4c50c2e35472", "e7e7ad62-0454-4c30-83be-a6e118117479", "User", "USER" });
+                values: new object[] { "dd5bb16c-6f6f-4fbe-8a27-316d7dca5852", "bae2b19f-a8ff-4636-b301-bf9e80fa4251", "User", "USER" });
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",

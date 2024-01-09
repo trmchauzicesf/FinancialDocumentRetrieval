@@ -21,14 +21,21 @@ namespace FinancialDocumentRetrieval.BL.Implementation
                     nameof(ProductType.Code1), new Dictionary<string, string[]>
                     {
                         { MaskingTypeAnonymization, new[] { "balance", "description" } },
-                        { MaskingTypeHash, new[] { "account_number", "date" } }
+                        { MaskingTypeHash, new[] { "account_number", "transaction_id" } }
                     }
                 },
                 {
                     nameof(ProductType.Code2), new Dictionary<string, string[]>
                     {
-                        { MaskingTypeAnonymization, new[] { "address", "phone_number" } },
-                        { MaskingTypeHash, new[] { "transaction_id", "amount" } }
+                        { MaskingTypeAnonymization, new[] { "name", "transaction_id" } },
+                        { MaskingTypeHash, new[] { "account_number", "balance" } }
+                    }
+                },
+                {
+                    nameof(ProductType.Code3), new Dictionary<string, string[]>
+                    {
+                        { MaskingTypeAnonymization, new[] { "balance", "transaction_id" } },
+                        { MaskingTypeHash, new[] { "account_number", "last_update_date" } }
                     }
                 }
             };

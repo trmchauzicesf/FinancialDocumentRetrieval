@@ -2,11 +2,10 @@
 using FinancialDocumentRetrieval.BL.Interface;
 using FinancialDocumentRetrieval.BL.Interface.Factory;
 using FinancialDocumentRetrieval.DAL.UnitOfWork;
-using FinancialDocumentRetrieval.Models.Common;
 using FinancialDocumentRetrieval.Models.Common.Enums;
+using FinancialDocumentRetrieval.Models.Common.Validation;
 using FinancialDocumentRetrieval.Models.DTOs.RequestDTOs;
 using FinancialDocumentRetrieval.Models.DTOs.ResponseDTOs;
-using FinancialDocumentRetrieval.Models.Entity;
 using Microsoft.Extensions.Logging;
 
 namespace FinancialDocumentRetrieval.BL.Implementation
@@ -17,10 +16,10 @@ namespace FinancialDocumentRetrieval.BL.Implementation
         private readonly IValidationFactory _validationFactory;
         private readonly IClientService _clientService;
         private readonly IAnonymizationService _anonymizationService;
-        private readonly ILogger<FinancialDocument> _logger;
+        private readonly ILogger<FinancialDocumentService> _logger;
         private readonly IMapper _mapper;
 
-        public FinancialDocumentService(IRepositoryInitUnitOfWork unitOfWork, ILogger<FinancialDocument> logger,
+        public FinancialDocumentService(IRepositoryInitUnitOfWork unitOfWork, ILogger<FinancialDocumentService> logger,
             IValidationFactory validationFactory, IMapper mapper, IClientService clientService,
             IAnonymizationService anonymizationService)
         {

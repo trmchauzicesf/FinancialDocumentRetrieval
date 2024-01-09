@@ -32,7 +32,7 @@ namespace FinancialDocumentRetrieval.DAL.Contexts
                 entityType.SetTableName(entityType.DisplayName());
             }
 
-            // Added non a nonclustred indexed because Guid as Primary key with Clustred index decrease DB performance
+            // Added non a non-clustered indexed because Guid as Primary key with Clustered index decrease DB performance
             modelBuilder.Entity<Client>()
                 .HasKey(e => e.Id)
                 .IsClustered(false);
