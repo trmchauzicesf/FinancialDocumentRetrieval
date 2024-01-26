@@ -7,18 +7,9 @@ using System.Linq.Expressions;
 
 namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
 {
-    public class BaseRepository
+    public abstract class BaseRepository
     {
         protected DatabaseContext Context { get; private set; }
-
-        public BaseRepository()
-        {
-        }
-
-        public BaseRepository(DatabaseContext context)
-        {
-            Context = context;
-        }
 
         public virtual void SetDbContext(DatabaseContext context)
         {
@@ -29,14 +20,6 @@ namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
     public class BaseRepository<TEntity> : BaseRepository, IBaseRepository<TEntity> where TEntity : BaseEntity
     {
         protected DbSet<TEntity> DbSet => Context.Set<TEntity>();
-
-        public BaseRepository() : base()
-        {
-        }
-
-        public BaseRepository(DatabaseContext context) : base(context)
-        {
-        }
 
         public async Task<TEntity> AddAsync(TEntity entity)
         {

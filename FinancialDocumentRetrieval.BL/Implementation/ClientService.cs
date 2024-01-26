@@ -18,14 +18,14 @@ namespace FinancialDocumentRetrieval.BL.Implementation
             _logger = logger;
         }
 
-        public async Task<string> GetVatForId(Guid id)
+        public async Task<string> GetVatForIdAsync(Guid id)
         {
-            return await _unitOfWork.ClientRepository.GetVat(id);
+            return await _unitOfWork.ClientRepository.GetVatAsync(id);
         }
 
-        public async Task<Client> GetAdditionalClientInfoForVat(string clientVat)
+        public async Task<Client> GetAdditionalClientInfoForVatAsync(string clientVat)
         {
-            var additionalClientInfo = await _unitOfWork.ClientRepository.GetAdditionalClientInfoForVat(clientVat);
+            var additionalClientInfo = await _unitOfWork.ClientRepository.GetAdditionalClientInfoForVatAsync(clientVat);
             if (additionalClientInfo != null && additionalClientInfo.CompanyType == nameof(AppEnums.CompanyType.small))
             {
                 throw new FinancialDocumentRetrievalException($"Company Type is {nameof(AppEnums.CompanyType.small)}");

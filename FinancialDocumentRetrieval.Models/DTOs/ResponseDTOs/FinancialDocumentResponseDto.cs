@@ -1,6 +1,6 @@
 ﻿namespace FinancialDocumentRetrieval.Models.DTOs.ResponseDTOs
 {
-    public class FinancialDocumentResponseDto
+    public record FinancialDocumentResponseDto
     {
         public string Data { get; set; }
 

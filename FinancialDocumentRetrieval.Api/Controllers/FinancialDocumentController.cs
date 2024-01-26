@@ -17,10 +17,10 @@ namespace FinancialDocumentRetrieval.Api.Controllers
 
         [Authorize]
         [HttpGet("get-financial-document")]
-        public async Task<ActionResult<FinancialDocumentResponseDto>> Get(
+        public async Task<ActionResult<FinancialDocumentResponseDto>> GetAsync(
             [FromBody] FinancialDocumentRequestDTO financialDocumentRequestDto)
         {
-            var financialDocument = await _financialDocumentService.Get(financialDocumentRequestDto);
+            var financialDocument = await _financialDocumentService.GetAsync(financialDocumentRequestDto);
             return Ok(financialDocument);
         }
     }

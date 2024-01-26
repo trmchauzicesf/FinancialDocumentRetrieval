@@ -2,7 +2,7 @@
 
 namespace FinancialDocumentRetrieval.DAL.UnitOfWork
 {
-    public interface IRepositoryInitUnitOfWork
+    public interface IRepositoryInitUnitOfWork : IUnitOfWork
     {
         public IFinancialDocumentRepository FinancialDocumentRepository { get; }
         public IClientRepository ClientRepository { get; }

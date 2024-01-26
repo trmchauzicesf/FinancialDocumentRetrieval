@@ -42,15 +42,12 @@ namespace FinancialDocumentRetrieval.Api.Middleware
             switch (ex)
             {
                 case FinancialDocumentRetrievalException e:
-                    // custom application error
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     break;
                 case KeyNotFoundException e:
-                    // not found error
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
                 default:
-                    // unhandled error
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }

@@ -2,7 +2,7 @@
 
 namespace FinancialDocumentRetrieval.Models.DTOs.RequestDTOs
 {
-    public class FinancialDocumentRequestDTO
+    public record FinancialDocumentRequestDTO
     {
         [Required]
         public string ProductCode { get; set; }

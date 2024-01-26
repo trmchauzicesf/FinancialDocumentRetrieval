@@ -2,7 +2,6 @@
 using FinancialDocumentRetrieval.DAL.UnitOfWork;
 using FinancialDocumentRetrieval.Models.Common.Exceptions;
 using FinancialDocumentRetrieval.Models.Common.Validation;
-using FinancialDocumentRetrieval.Models.DTOs;
 using FinancialDocumentRetrieval.Models.Entity;
 using System.Linq.Expressions;
 
@@ -10,7 +9,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation.Strategy
 {
     public class TenantClientStrategy : IValidationStrategy
     {
-        public async Task Validate(FinancialDocumentValidation financialDocumentValidation, IRepositoryInitUnitOfWork unitOfWork)
+        public async Task ValidateAsync(FinancialDocumentValidation financialDocumentValidation, IRepositoryInitUnitOfWork unitOfWork)
         {
             Expression<Func<TenantClient, bool>> predicate = tc => tc.TenantId == financialDocumentValidation.TenantId
             && tc.ClientId == financialDocumentValidation.ClientId && tc.IsActive;

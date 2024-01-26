@@ -24,7 +24,7 @@ public class AccountControllerIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task Register_ValidUser_ReturnsOk()
+    public async Task RegisterAsync_ValidUser_ReturnsOk()
     {
         // Arrange
         var apiUserDto = new ApiUserDto
@@ -46,7 +46,7 @@ public class AccountControllerIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task Register_InvalidUser_ReturnsBadRequest()
+    public async Task RegisterAsync_InvalidUser_ReturnsBadRequest()
     {
         // Arrange
         var apiUserDto = new ApiUserDto

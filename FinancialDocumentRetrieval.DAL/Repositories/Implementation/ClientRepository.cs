@@ -8,15 +8,15 @@ namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
 {
     public class ClientRepository : BaseRepository<Client>, IClientRepository
     {
-        public async Task<string> GetVat(Guid id)
+        public async Task<string> GetVatAsync(Guid id)
         {
             return await Context.Clients
                 .Where(c => c.Id == id)
                 .Select(c => c.Vat)
-                .FirstOrDefaultAsync() ?? throw new NotFoundException(nameof(GetVat), id);
+                .FirstOrDefaultAsync() ?? throw new NotFoundException(nameof(GetVatAsync), id);
         }
 
-        public async Task<Client> GetAdditionalClientInfoForVat(string clientVat)
+        public async Task<Client> GetAdditionalClientInfoForVatAsync(string clientVat)
         {
             return await Context.Clients
                        .Where(c => c.Vat == clientVat)
@@ -25,7 +25,7 @@ namespace FinancialDocumentRetrieval.DAL.Repositories.Implementation
                            RegistrationNumber = c.RegistrationNumber,
                            CompanyType = c.CompanyType
                        }).FirstOrDefaultAsync() ??
-                   throw new NotFoundException(nameof(GetAdditionalClientInfoForVat), clientVat);
+                   throw new NotFoundException(nameof(GetAdditionalClientInfoForVatAsync), clientVat);
         }
     }
 }

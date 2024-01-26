@@ -11,21 +11,21 @@ namespace FinancialDocumentRetrieval.Test.UnitTests.Services
     public class ClientServiceTests
     {
         [Fact]
-        public async Task GetVatForId_ValidClientId_ReturnsVat()
+        public async Task GetVatForIdAsync_ValidClientId_ReturnsVat()
         {
             // Arrange
             var clientId = Guid.NewGuid();
             var expectedVat = "AB321321321";
 
             var fakeUnitOfWork = A.Fake<IRepositoryInitUnitOfWork>();
-            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetVat(clientId)).Returns(expectedVat);
+            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetVatAsync(clientId)).Returns(expectedVat);
 
             var fakeLogger = A.Fake<ILogger<ClientService>>();
 
             var clientService = new ClientService(fakeUnitOfWork, fakeLogger);
 
             // Act
-            var actualVat = await clientService.GetVatForId(clientId);
+            var actualVat = await clientService.GetVatForIdAsync(clientId);
 
             // Assert
             actualVat.Should().NotBeNullOrWhiteSpace();
@@ -34,21 +34,21 @@ namespace FinancialDocumentRetrieval.Test.UnitTests.Services
         }
 
         [Fact]
-        public async Task GetVatForId_InvalidClientId_ReturnsNull()
+        public async Task GetVatForIdAsync_InvalidClientId_ReturnsNull()
         {
             // Arrange
             var clientId = Guid.NewGuid();
             string expectedVat = null; // Simulate an invalid or non-existent client
 
             var fakeUnitOfWork = A.Fake<IRepositoryInitUnitOfWork>();
-            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetVat(clientId)).Returns(expectedVat);
+            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetVatAsync(clientId)).Returns(expectedVat);
 
             var fakeLogger = A.Fake<ILogger<ClientService>>();
 
             var clientService = new ClientService(fakeUnitOfWork, fakeLogger);
 
             // Act
-            var actualVat = await clientService.GetVatForId(clientId);
+            var actualVat = await clientService.GetVatForIdAsync(clientId);
 
             // Assert
             actualVat.Should().BeNull();
@@ -56,18 +56,18 @@ namespace FinancialDocumentRetrieval.Test.UnitTests.Services
 
         [Theory]
         [InlineData("AB321321321")]
-        public async Task GetAdditionalClientInfoForVat_ReturnsClientWhenCompanyTypeIsNotSmall(
+        public async Task GetAdditionalClientInfoForVatAsync_ReturnsClientWhenCompanyTypeIsNotSmall(
             string clientVat)
         {
             // Arrange
             var client = new Client { CompanyType = "medium" };
             var fakeUnitOfWork = A.Fake<IRepositoryInitUnitOfWork>();
-            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetAdditionalClientInfoForVat(clientVat)).Returns(client);
+            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetAdditionalClientInfoForVatAsync(clientVat)).Returns(client);
             var fakeLogger = A.Fake<ILogger<ClientService>>();
             var clientService = new ClientService(fakeUnitOfWork, fakeLogger);
 
             // Act
-            var result = await clientService.GetAdditionalClientInfoForVat(clientVat);
+            var result = await clientService.GetAdditionalClientInfoForVatAsync(clientVat);
 
             // Assert
             result.Should().NotBeNull();
@@ -77,19 +77,19 @@ namespace FinancialDocumentRetrieval.Test.UnitTests.Services
 
         [Theory]
         [InlineData("AB321321321")]
-        public async Task GetAdditionalClientInfoForVat_ThrowsExceptionWhenCompanyTypeIsSmall(
+        public async Task GetAdditionalClientInfoForVatAsync_ThrowsExceptionWhenCompanyTypeIsSmall(
             string clientVat)
         {
             // Arrange
             var client = new Client { CompanyType = "small" };
             var fakeUnitOfWork = A.Fake<IRepositoryInitUnitOfWork>();
-            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetAdditionalClientInfoForVat(clientVat)).Returns(client);
+            A.CallTo(() => fakeUnitOfWork.ClientRepository.GetAdditionalClientInfoForVatAsync(clientVat)).Returns(client);
             var fakeLogger = A.Fake<ILogger<ClientService>>();
             var clientService = new ClientService(fakeUnitOfWork, fakeLogger);
 
             // Act & Assert
             await Assert.ThrowsAsync<FinancialDocumentRetrievalException>(async () =>
-                await clientService.GetAdditionalClientInfoForVat(clientVat));
+                await clientService.GetAdditionalClientInfoForVatAsync(clientVat));
         }
     }
 }

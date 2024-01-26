@@ -5,7 +5,7 @@ namespace FinancialDocumentRetrieval.BL.Interface
 {
     public interface IAuthManager
     {
-        Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
-        Task<AuthResponseDto> Login(LoginDto loginDto);
+        Task<IEnumerable<IdentityError>> RegisterAsync(ApiUserDto userDto);
+        Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
     }
 }

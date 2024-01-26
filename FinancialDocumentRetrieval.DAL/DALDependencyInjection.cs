@@ -3,7 +3,7 @@ using FinancialDocumentRetrieval.DAL.Identity;
 using FinancialDocumentRetrieval.DAL.Repositories.Implementation;
 using FinancialDocumentRetrieval.DAL.Repositories.Interface;
 using FinancialDocumentRetrieval.DAL.UnitOfWork;
-using FinancialDocumentRetrieval.Models.Common;
+using FinancialDocumentRetrieval.Models.Common.Config;
 using FinancialDocumentRetrieval.Models.Common.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,19 +27,12 @@ namespace FinancialDocumentRetrieval.DAL
         private static void AddUnitOfWork(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryInitUnitOfWork, RepositoryInitUnitOfWork>();
-            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
         }
 
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            var databaseConfig = configuration.GetSection("Database").Get<DatabaseConfiguration>();
-            if (databaseConfig == null)
-            {
-                return;
-            }
-
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(databaseConfig.ConnectionString,
+                options.UseSqlServer(ConfigProvider.ConnectionString,
                     opt => opt.MigrationsAssembly(typeof(DatabaseContext).Assembly.FullName)));
         }
 

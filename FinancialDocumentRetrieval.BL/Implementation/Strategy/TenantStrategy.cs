@@ -9,7 +9,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation.Strategy
 {
     public class TenantStrategy : IValidationStrategy
     {
-        public async Task Validate(FinancialDocumentValidation financialDocumentValidation, IRepositoryInitUnitOfWork unitOfWork)
+        public async Task ValidateAsync(FinancialDocumentValidation financialDocumentValidation, IRepositoryInitUnitOfWork unitOfWork)
         {
             Expression<Func<Tenant, bool>> predicate = p => p.Id == financialDocumentValidation.TenantId && p.IsActive;
 

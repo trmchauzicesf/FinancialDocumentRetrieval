@@ -43,7 +43,7 @@ namespace FinancialDocumentRetrieval.Tests
         }
 
         [Fact]
-        public void Register_ValidUserDto_ReturnsEmptyErrorsList()
+        public void RegisterAsync_ValidUserDto_ReturnsEmptyErrorsList()
         {
             // Arrange
             var userDto = new ApiUserDto
@@ -58,14 +58,14 @@ namespace FinancialDocumentRetrieval.Tests
                 .Returns(IdentityResult.Success);
 
             // Act
-            var errors = _authManager.Register(userDto).GetAwaiter().GetResult();
+            var errors = _authManager.RegisterAsync(userDto).GetAwaiter().GetResult();
 
             // Assert
             errors.Should().BeEmpty();
         }
 
         [Fact]
-        public void Register_InvalidUserDto_ReturnsErrorsList()
+        public void RegisterAsync_InvalidUserDto_ReturnsErrorsList()
         {
             // Arrange
             var userDto = new ApiUserDto
@@ -88,7 +88,7 @@ namespace FinancialDocumentRetrieval.Tests
                 .Returns(IdentityResult.Failed(errorsList));
 
             // Act
-            var errors = _authManager.Register(userDto).GetAwaiter().GetResult();
+            var errors = _authManager.RegisterAsync(userDto).GetAwaiter().GetResult();
 
             // Assert
             errors.Should().Contain(errorsList)
@@ -96,7 +96,7 @@ namespace FinancialDocumentRetrieval.Tests
         }
 
         [Fact]
-        public void Register_BadEmailFormat_ReturnsErrorsList()
+        public void RegisterAsync_BadEmailFormat_ReturnsErrorsList()
         {
             // Arrange
             var userDto = new ApiUserDto
@@ -116,7 +116,7 @@ namespace FinancialDocumentRetrieval.Tests
                 .Returns(IdentityResult.Failed(errorsList));
 
             // Act
-            var errors = _authManager.Register(userDto).GetAwaiter().GetResult();
+            var errors = _authManager.RegisterAsync(userDto).GetAwaiter().GetResult();
 
             // Assert
             errors.Should().NotBeEmpty()

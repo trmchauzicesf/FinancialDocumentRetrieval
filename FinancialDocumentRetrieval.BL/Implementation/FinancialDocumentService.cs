@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FinancialDocumentRetrieval.BL.Implementation.Strategy;
 using FinancialDocumentRetrieval.BL.Interface;
 using FinancialDocumentRetrieval.BL.Interface.Factory;
 using FinancialDocumentRetrieval.DAL.UnitOfWork;
@@ -31,22 +32,22 @@ namespace FinancialDocumentRetrieval.BL.Implementation
             _anonymizationService = anonymizationService;
         }
 
-        public async Task<FinancialDocumentResponseDto> Get(FinancialDocumentRequestDTO financialDocumentRequestDto)
+        public async Task<FinancialDocumentResponseDto> GetAsync(FinancialDocumentRequestDTO financialDocumentRequestDto)
         {
             var financialDocumentValidation = _mapper.Map<FinancialDocumentValidation>(financialDocumentRequestDto);
 
-            await Validate(financialDocumentValidation, AppEnums.EntityName.Product);
-            await Validate(financialDocumentValidation, AppEnums.EntityName.Tenant);
+            await ValidateAsync(financialDocumentValidation, AppEnums.EntityName.Product);
+            await ValidateAsync(financialDocumentValidation, AppEnums.EntityName.Tenant);
 
             var clientId = await _unitOfWork.FinancialDocumentRepository
-                .GetClientIdForTenantIdAndDocumentId(financialDocumentRequestDto.TenantId,
+                .GetClientIdForTenantIdAndDocumentIdAsync(financialDocumentRequestDto.TenantId,
                     financialDocumentRequestDto.DocumentId);
             financialDocumentValidation.ClientId = clientId;
 
-            await Validate(financialDocumentValidation, AppEnums.EntityName.ClientTenant);
-            var clientVat = await _clientService.GetVatForId(clientId);
+            await ValidateAsync(financialDocumentValidation, AppEnums.EntityName.ClientTenant);
+            var clientVat = await _clientService.GetVatForIdAsync(clientId);
 
-            var additionalClientInfo = await _clientService.GetAdditionalClientInfoForVat(clientVat);
+            var additionalClientInfo = await _clientService.GetAdditionalClientInfoForVatAsync(clientVat);
 
             var documentResponseDto = new FinancialDocumentResponseDto
             {
@@ -54,7 +55,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation
             };
 
             var documentData = await _unitOfWork.FinancialDocumentRepository
-                .GetDataForTenantIdAndDocumentId(financialDocumentRequestDto.TenantId,
+                .GetDataForTenantIdAndDocumentIdAsync(financialDocumentRequestDto.TenantId,
                     financialDocumentRequestDto.DocumentId);
 
             documentResponseDto.Data =
@@ -66,12 +67,12 @@ namespace FinancialDocumentRetrieval.BL.Implementation
 
         #region Private
 
-        private async Task Validate(FinancialDocumentValidation financialDocumentValidation,
+        private async Task ValidateAsync(FinancialDocumentValidation financialDocumentValidation,
             AppEnums.EntityName entityName)
         {
             var strategy = _validationFactory.Create(entityName);
 
-            await strategy.Validate(financialDocumentValidation, _unitOfWork);
+            await strategy.ValidateAsync(financialDocumentValidation, _unitOfWork);
         }
 
         #endregion

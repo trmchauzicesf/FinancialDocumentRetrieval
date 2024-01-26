@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using FinancialDocumentRetrieval.Models.Common.Config;
 
 namespace FinancialDocumentRetrieval.BL.Implementation
 {
@@ -18,6 +19,8 @@ namespace FinancialDocumentRetrieval.BL.Implementation
         private readonly UserManager<ApiUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthManager> _logger;
+
+        // TODO move _user declaration and initialization to public methods
         private ApiUser _user;
 
         public AuthManager(IMapper mapper, UserManager<ApiUser> userManager, IConfiguration configuration,
@@ -29,7 +32,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation
             _logger = logger;
         }
 
-        public async Task<AuthResponseDto> Login(LoginDto loginDto)
+        public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
             var authResponseDto = new AuthResponseDto();
             _logger.LogInformation($"Looking for user with email {loginDto.Email}");
@@ -42,7 +45,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation
                 return authResponseDto;
             }
 
-            var token = await GenerateToken();
+            var token = await GenerateTokenAsync();
             _logger.LogInformation($"Token generated for user with email {loginDto.Email} | Token: {token}");
 
             authResponseDto.Token = token;
@@ -51,7 +54,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation
             return authResponseDto;
         }
 
-        public async Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto)
+        public async Task<IEnumerable<IdentityError>> RegisterAsync(ApiUserDto userDto)
         {
             _user = _mapper.Map<ApiUser>(userDto);
             _user.UserName = userDto.Email;
@@ -68,10 +71,10 @@ namespace FinancialDocumentRetrieval.BL.Implementation
 
         #region Private
 
-        private async Task<string> GenerateToken()
+        private async Task<string> GenerateTokenAsync()
         {
             var securityKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfiguration:SecretKey"]));
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigProvider.JwtKey));
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -90,7 +93,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["JwtConfiguration:DurationInMinutes"])),
+                expires: DateTime.Now.AddMinutes(Convert.ToInt32(ConfigProvider.DurationInMinutes)),
                 signingCredentials: credentials
             );
 

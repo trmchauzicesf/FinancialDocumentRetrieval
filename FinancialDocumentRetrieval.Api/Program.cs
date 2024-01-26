@@ -1,6 +1,7 @@
 using AspNetCoreRateLimit;
 using FinancialDocumentRetrieval.Api.Middleware;
 using FinancialDocumentRetrieval.DAL;
+using FinancialDocumentRetrieval.Models.Common.Config;
 using Serilog;
 
 namespace FinancialDocumentRetrieval.Api;
@@ -16,11 +17,12 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwagger();
         builder.Services.AddCors();
+        ConfigProvider.Setup(builder.Configuration);
 
         // Avoiding DOS attacks with Rate Limit
         builder.Services.ConfigureRateLimit(builder.Configuration);
 
-        // Global Http Cache Headers Configure, if it is need can be specified also on action/controller level
+        // Global Http Cache Headers Configure, if it is needed can be specified also on action/controller level
         builder.Services.ConfigureHttpCacheHeaders();
 
         builder.Services.AddBL();

@@ -1,4 +1,5 @@
 ﻿using AspNetCoreRateLimit;
+using FinancialDocumentRetrieval.Models.Common.Config;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,6 @@ namespace FinancialDocumentRetrieval.Api
                 opt.ReportApiVersions = true;
                 opt.AssumeDefaultVersionWhenUnspecified = true;
                 opt.DefaultApiVersion = new ApiVersion(1, 0);
-
             });
         }
 
@@ -42,26 +42,22 @@ namespace FinancialDocumentRetrieval.Api
                 },
                 validationModelOptions =>
                 {
+                    // revalidate data if data is changed and ETAG in response header will be the same
                     validationModelOptions.MustRevalidate = true;
                     validationModelOptions.ProxyRevalidate = true;
                 },
-                middlewareOptions =>
-                {
-                    middlewareOptions.IgnoredStatusCodes = new[] { 500 };
-                });
+                middlewareOptions => { middlewareOptions.IgnoredStatusCodes = new[] { 500 }; });
         }
 
         public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtConfiguration = configuration.GetSection("JwtConfiguration");
-
-            var key = Encoding.ASCII.GetBytes(jwtConfiguration.GetSection("SecretKey").Value);
+            var key = Encoding.ASCII.GetBytes(ConfigProvider.JwtKey);
 
             services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(x =>
                 {
                     x.RequireHttpsMetadata = false;
@@ -90,18 +86,19 @@ namespace FinancialDocumentRetrieval.Api
                     Scheme = "Bearer"
                 });
 
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        new OpenApiSecurityScheme
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
                 });
             });
         }

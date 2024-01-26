@@ -2,7 +2,7 @@
 
 namespace FinancialDocumentRetrieval.Models.Users
 {
-    public class LoginDto
+    public record LoginDto
     {
         [Required]
         [EmailAddress]

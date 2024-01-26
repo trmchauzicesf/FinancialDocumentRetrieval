@@ -2,7 +2,7 @@
 
 namespace FinancialDocumentRetrieval.Models.Users
 {
-    public class ApiUserDto : LoginDto
+    public record ApiUserDto : LoginDto
     {
         public string FirstName { get; set; }
 
