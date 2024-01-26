@@ -21,6 +21,9 @@ Populate Barear token and create json raw body request with data from DB https:/
       ---Potential future improvements---
      
 -Add Anonymization Config to SQL Table or json.conf file
+
 -Insert all test data OnModelCreating
+
 -To cover all integration/unit/end-to-end tests
+
 -To upgrade to a new version of .NET
