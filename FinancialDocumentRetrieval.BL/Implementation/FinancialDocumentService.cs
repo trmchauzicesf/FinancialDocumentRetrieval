@@ -32,7 +32,7 @@ namespace FinancialDocumentRetrieval.BL.Implementation
             _anonymizationService = anonymizationService;
         }
 
-        public async Task<FinancialDocumentResponseDto> GetAsync(FinancialDocumentRequestDTO financialDocumentRequestDto)
+        public async Task<FinancialDocumentResponseDto> RetrieveAsync(FinancialDocumentRequestDTO financialDocumentRequestDto)
         {
             var financialDocumentValidation = _mapper.Map<FinancialDocumentValidation>(financialDocumentRequestDto);
 
