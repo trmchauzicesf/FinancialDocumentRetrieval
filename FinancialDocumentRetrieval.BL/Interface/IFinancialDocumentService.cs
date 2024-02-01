@@ -5,6 +5,6 @@ namespace FinancialDocumentRetrieval.BL.Interface
 {
     public interface IFinancialDocumentService
     {
-        Task<FinancialDocumentResponseDto> GetAsync(FinancialDocumentRequestDTO financialDocumentRequestDto);
+        Task<FinancialDocumentResponseDto> RetrieveAsync(FinancialDocumentRequestDTO financialDocumentRequestDto);
     }
 }

@@ -16,11 +16,11 @@ namespace FinancialDocumentRetrieval.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet("get-financial-document")]
-        public async Task<ActionResult<FinancialDocumentResponseDto>> GetAsync(
+        [HttpPost("retrieve-financial-document")]
+        public async Task<ActionResult<FinancialDocumentResponseDto>> RetrieveAsync(
             [FromBody] FinancialDocumentRequestDTO financialDocumentRequestDto)
         {
-            var financialDocument = await _financialDocumentService.GetAsync(financialDocumentRequestDto);
+            var financialDocument = await _financialDocumentService.RetrieveAsync(financialDocumentRequestDto);
             return Ok(financialDocument);
         }
     }
